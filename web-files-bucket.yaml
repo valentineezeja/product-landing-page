@@ -112,7 +112,7 @@ Resources:
         AliasTarget:
           DNSName: !GetAtt CloudFrontDistribution.DomainName
           EvaluateTargetHealth: false
-          HostedZoneId: Z2FDTNDATAQYW2
+          HostedZoneId: Z2FDTNDATAQYW2 #note that this is generic for CloudFront
       - Name: !Sub 'www.${DomainName}'
         Type: A
         AliasTarget:
