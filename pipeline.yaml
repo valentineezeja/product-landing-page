@@ -16,11 +16,13 @@ Parameters:
     AllowedPattern: "[A-Za-z0-9-]+"
     Default: master
 
+
   DestinationS3Bucket: 
     Type: String
     Default: web-files-s3-root
     AllowedPattern: "[A-Za-z0-9-]+"
     Description: The bucket created earlier for the web/public files
+
 
 Resources:
   CodeBuildServiceRole:
@@ -213,6 +215,7 @@ Resources:
               OutputArtifacts:
                 - Name: BuildOutput
               InputArtifacts:
+
                 - Name: SourceCode
 
         - Name: Deploy
@@ -229,3 +232,4 @@ Resources:
               InputArtifacts:
                 - Name: BuildOutput
               RunOrder: 1
+
