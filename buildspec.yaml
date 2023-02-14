@@ -7,6 +7,8 @@ phases:
       - echo Build started on `date`
 
 artifacts:
-    files:
-      - 'public/*'
-    discard-paths: yes
+
+  files:
+    - '**/*'
+  base-directory: $CODEBUILD_SRC_DIR/public/
+  discard-paths: no
