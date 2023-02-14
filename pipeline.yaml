@@ -16,6 +16,12 @@ Parameters:
     AllowedPattern: "[A-Za-z0-9-]+"
     Default: master
 
+  DestinationS3Bucket: 
+    Type: String
+    Default: web-files-s3-root
+    AllowedPattern: "[A-Za-z0-9-]+"
+    Description: The bucket created earlier for the web/public files
+
 Resources:
   CodeBuildServiceRole:
     Type: 'AWS::IAM::Role'
@@ -92,6 +98,7 @@ Resources:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: 'aws/codebuild/standard:4.0'
+
   CodePipelineServiceRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -207,3 +214,18 @@ Resources:
                 - Name: BuildOutput
               InputArtifacts:
                 - Name: SourceCode
+
+        - Name: Deploy
+          Actions:
+            - Name: S3Deploy
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: S3
+                Version: '1'
+              Configuration:
+                BucketName: !Ref DestinationS3Bucket
+                Extract: 'true'
+              InputArtifacts:
+                - Name: BuildOutput
+              RunOrder: 1
