@@ -3,6 +3,7 @@ SecretsManager2.yaml
 index.html
 *.jpg
 *.png
+.json
 
 
 
