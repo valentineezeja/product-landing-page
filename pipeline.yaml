@@ -23,6 +23,20 @@ Parameters:
     AllowedPattern: "[A-Za-z0-9-]+"
     Description: The bucket created earlier for the web/public files
 
+  SourceS3Bucket:
+      Type: String
+      Default: lambda-sourcewcode
+      AllowedPattern: "[A-Za-z0-9-]+"
+      Description: The name of the S3 bucket which contains the Lambda source code in zipped format
+
+  myCloudfrontDist: 
+      Type: String
+      AllowedPattern: "[A-Za-z0-9-]+"
+      Description: The existing cloudfront distribution
+  
+  CloudfrontDomainName:
+      Type: String
+      Description: The existing CloudFront domain name
 
 Resources:
   CodeBuildServiceRole:
@@ -100,6 +114,63 @@ Resources:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: 'aws/codebuild/standard:4.0'
+    
+  CreateLambdaExecutionPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: Lambda_Cloudfront_Invalidation
+      Description: "This policy invalidates Cloudfront Distribution called inside a CodePipeline"
+      Path: "/"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: VisualEditor0
+            Effect: Allow
+            Action: cloudfront:CreateInvalidation
+            Resource: '*'
+          - Sid: VisualEditor1
+            Effect: Allow
+            Action: [
+              'codepipeline:PutJobSuccessResult',
+              'codepipeline:PutJobFailureResult'
+            ]
+            Resource: '*'
+          - Sid: VisualEditor2
+            Effect: Allow
+            Action: logs:*
+            Resource: '*'
+
+  LambdaExecutedRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      ManagedPolicyArns: [
+        !Ref CreateLambdaExecutionPolicy
+      ]
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+      Path: /
+      RoleName: LambdaExecutedRole_Invalidate
+
+  LambdaCloudfrontInvalidation:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Handler: "invalidateCloudFront.lambda_handler"
+      FunctionName: invalidateCloudfront
+      Role:
+        Fn::GetAtt:
+          - "LambdaExecutedRole"
+          - "Arn"
+      Code:
+        S3Bucket: !Ref SourceS3Bucket
+        S3Key: "invalidateCloudFront.zip"
+      Runtime: "python2.7"
+      Timeout: 25
 
   CodePipelineServiceRole:
     Type: 'AWS::IAM::Role'
@@ -232,4 +303,16 @@ Resources:
               InputArtifacts:
                 - Name: BuildOutput
               RunOrder: 1
+       
+        - Name: LambdaDeploy
+          Actions:
+              ActionTypeId:
+                Category: Invoke
+                Owner: AWS
+                Provider: Lambda
+                Version: '1'
+              Configuration:
+                FunctionName: invalidateCloudfront
+                EUserParameters: !Ref myCloudfrontDist
+              RunOrder: 2
 

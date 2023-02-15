@@ -11,14 +11,14 @@ Resources:
 
   S3BucketLogs:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Delete
+    DeletionPolicy: Retain
     Properties:
       AccessControl: LogDeliveryWrite
       BucketName: !Sub '${AWS::StackName}-logs'
 
   S3BucketRoot:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Delete
+    DeletionPolicy: Retain
     Properties:
       AccessControl: PublicRead
       BucketName: !Sub '${AWS::StackName}-root'
