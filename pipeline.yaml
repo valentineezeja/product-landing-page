@@ -23,6 +23,7 @@ Parameters:
     AllowedPattern: "[A-Za-z0-9-]+"
     Description: The bucket created earlier for the web/public files
 
+
   SourceS3Bucket:
       Type: String
       Default: lambda-sourcewcode
@@ -37,6 +38,7 @@ Parameters:
   CloudfrontDomainName:
       Type: String
       Description: The existing CloudFront domain name
+
 
 Resources:
   CodeBuildServiceRole:
@@ -114,6 +116,7 @@ Resources:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: 'aws/codebuild/standard:4.0'
+
     
   CreateLambdaExecutionPolicy:
     Type: AWS::IAM::ManagedPolicy
@@ -171,6 +174,7 @@ Resources:
         S3Key: "invalidateCloudFront.zip"
       Runtime: "python2.7"
       Timeout: 25
+
 
   CodePipelineServiceRole:
     Type: 'AWS::IAM::Role'
@@ -303,6 +307,7 @@ Resources:
               InputArtifacts:
                 - Name: BuildOutput
               RunOrder: 1
+              
        
         - Name: LambdaDeploy
           Actions:
@@ -315,4 +320,5 @@ Resources:
                 FunctionName: invalidateCloudfront
                 EUserParameters: !Ref myCloudfrontDist
               RunOrder: 2
+
 
