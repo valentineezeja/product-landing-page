@@ -26,10 +26,12 @@ Parameters:
 
 
   SourceS3Bucket:
+
     Type: String
     Default: lampda-s3source-lambda
     AllowedPattern: "[A-Za-z0-9-]+"
     Description: The name of the S3 bucket which contains the Lambda source code in zipped format
+
 
   myCloudfrontDist: 
       Type: String
@@ -173,7 +175,9 @@ Resources:
       Code:
         S3Bucket: !Ref SourceS3Bucket
         S3Key: "invalidateCloudFront.zip"
+
       Runtime: "python3.9"
+
       Timeout: 25
 
 
@@ -322,3 +326,4 @@ Resources:
                 FunctionName: invalidateCloudfront
                 UserParameters: !Ref myCloudfrontDist
               RunOrder: 2
+
