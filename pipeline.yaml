@@ -9,7 +9,8 @@ Parameters:
   GitHubRepository:
     Type: String
     AllowedPattern: "[A-Za-z0-9-]+"
-    Default: new-product #just repo name, not the full URL
+    Default: new-product
+    Description: Just repo name, not the full URL
     
   GitHubBranch:
     Type: String
@@ -25,10 +26,10 @@ Parameters:
 
 
   SourceS3Bucket:
-      Type: String
-      Default: lambda-sourcewcode
-      AllowedPattern: "[A-Za-z0-9-]+"
-      Description: The name of the S3 bucket which contains the Lambda source code in zipped format
+    Type: String
+    Default: lampda-s3source-lambda
+    AllowedPattern: "[A-Za-z0-9-]+"
+    Description: The name of the S3 bucket which contains the Lambda source code in zipped format
 
   myCloudfrontDist: 
       Type: String
@@ -172,7 +173,7 @@ Resources:
       Code:
         S3Bucket: !Ref SourceS3Bucket
         S3Key: "invalidateCloudFront.zip"
-      Runtime: "python2.7"
+      Runtime: "python3.9"
       Timeout: 25
 
 
@@ -311,6 +312,7 @@ Resources:
        
         - Name: LambdaDeploy
           Actions:
+            - Name: LambdaDeploy
               ActionTypeId:
                 Category: Invoke
                 Owner: AWS
@@ -318,7 +320,5 @@ Resources:
                 Version: '1'
               Configuration:
                 FunctionName: invalidateCloudfront
-                EUserParameters: !Ref myCloudfrontDist
+                UserParameters: !Ref myCloudfrontDist
               RunOrder: 2
-
-
