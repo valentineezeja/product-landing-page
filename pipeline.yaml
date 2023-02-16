@@ -226,6 +226,14 @@ Resources:
                   - 'codebuild:StartBuild'
                 Resource: '*'
                 Effect: Allow
+                
+              - Sid: LambdaInvokepolicy
+                Effect: Allow
+                Action:
+                  - 'lambda:ListFunctions'
+                  - 'lambda:InvokeFunction'
+                Resource: '*'
+
   CodePipelineArtifactStore:
     Type: 'AWS::S3::Bucket'
     Properties:
