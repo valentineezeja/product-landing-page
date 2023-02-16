@@ -32,3 +32,23 @@ The following factors influenced my choice of tools and technology for architect
 - AWS Lambda
 - CloudWatch
 - Secrets Manager
+
+# Summarised flowchart:
+- Here is a flowchart showing the processes involved in the website deployment; I have added only necessary details to keep it as simple as possible
+
+![Infra diagram drawio](https://user-images.githubusercontent.com/25130252/219280500-f4a8d56c-2da2-4826-a520-64f733bf4fb1.svg)
+
+
+# Cloudformatiion stack diagrams:
+
+##Secrets manager stack:
+![Secrets Manager](https://user-images.githubusercontent.com/25130252/219281060-f9633b31-eb45-4dc2-b849-de6b9abd92c5.png)
+
+## Frontend deployment stack:
+
+![Frontend deployment](https://user-images.githubusercontent.com/25130252/219281274-27b9d8be-3da6-4159-b68a-455f83e74819.png)
+
+## main infrastructure stack:
+
+![image](https://user-images.githubusercontent.com/25130252/219281591-bd8678ab-1476-4c66-9b1b-c55977e792db.png)
+
