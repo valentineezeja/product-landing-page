@@ -1,0 +1,43 @@
+
+Resources:
+  #S3 destination bucket for replication
+  ReplicawebfilesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: replica-web-files-bucket20220217
+      AccessControl: LogDeliveryWrite
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: False
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+      Tags:
+        - Key: project
+          Value: new-product
+
+  #S3 Bucket Policy for the replication bucket
+  MyBucketTestOhioBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ReplicawebfilesBucket
+      PolicyDocument:
+        Statement:
+        - Sid: AllowSSLRequestsOnly
+          Action: s3:*
+          Effect: Deny
+          Resource:
+            - replica-web-files-bucket20220217
+            - replica-web-files-bucket20220217/*
+          Condition:
+            Bool:
+              aws:SecureTransport: 'false'
+          Principal: "*"
+        - Sid: PublicReadForGetBucketObjects
+          Effect: Allow
+          Principal:
+            AWS: arn:aws:iam::accountID:root
+          Action: "*"
+          Resource: 
+            - ReplicawebfilesBucket
