@@ -1,8 +1,7 @@
 
 # New Product Holding Page
 
-This is a [domain-holding page](https://lpool.valentineezeja.com/) page for a soon to be launched product. This is 
-
+This is a [domain-holding page](https://lpool.valentineezeja.com/) page for a soon to be launched product.
 
 # Tools versions/access prerequisites:
 - AWS CLI: aws-cli/2.6.4 Python/3.9.11
