@@ -28,6 +28,17 @@ Resources:
       WebsiteConfiguration:
         ErrorDocument: 'error.html'
         IndexDocument: 'index.html'
+      ReplicationConfiguration:
+        Role: !GetAtt [ReplicaRole, Arn]
+        Rules:
+        - Destination:
+            Bucket: arn:aws:s3:::crrdestination-bucket
+            StorageClass: STANDARD
+          Id: Backup
+          Prefix: ''
+          Status: Enabled
+      VersioningConfiguration:
+        Status: Enabled
 
   S3BucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -40,6 +51,38 @@ Resources:
             Action: 's3:GetObject'
             Principal: '*'
             Resource: !Sub '${S3BucketRoot.Arn}/*'
+
+  ReplicaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: ['sts:AssumeRole']
+          Effect: Allow
+          Principal:
+            Service: [s3.amazonaws.com]
+
+  ReplicaPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - s3:Get*
+          - s3:ListBucket
+          Resource:
+          - !Ref S3BucketRoot
+          - !Sub '${S3BucketRoot.Arn}/*'
+          Effect: 'Allow'
+        - Action:
+          - s3:ReplicateObject
+          - s3:ReplicateDelete
+          - s3:ReplicateTags
+          - s3:GetObjectVersionTagging
+          Effect: 'Allow'
+          Resource: arn:aws:s3:::crrdestination-bucket/*
+      PolicyName: ReplicaPolicy
+      Roles: [!Ref 'ReplicaRole']
 
   CertificateManagerCertificate:
     Type: AWS::CertificateManager::Certificate
