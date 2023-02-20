@@ -1,5 +1,4 @@
 Resources:
-    
   LambdaBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
