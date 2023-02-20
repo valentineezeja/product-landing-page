@@ -51,7 +51,6 @@ Resources:
             Action: 's3:GetObject'
             Principal: '*'
             Resource: !Sub '${S3BucketRoot.Arn}/*'
-
   ReplicaRole:
     Type: AWS::IAM::Role
     Properties:
